@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<configuration>
+	<property>
+		<name>fs.defaultFS</name>
+		<value>hdfs://namenode:9000</value>
+	</property>
+	<property>
+		<name>hadoop.native.lib</name>
+		<value>false</value>
+		<description>Should native hadoop libraries, if present, be used.</description>
+	</property>
+</configuration>
