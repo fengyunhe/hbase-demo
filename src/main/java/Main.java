@@ -20,6 +20,17 @@ public class Main {
         createSchemaTables(conf);
         modifyColumns(conf);
         addData(conf);
+        listData(conf);
+    }
+
+    private static void listData(Configuration conf) throws IOException {
+        try (Connection connection = ConnectionFactory.createConnection(conf)) {
+            ResultScanner scanner = connection.getTable(TableName.valueOf("user2"))
+                    .getScanner(new Scan().addFamily("info".getBytes()).addFamily("status".getBytes()));
+            for (Result result : scanner) {
+                log.info(result.toString());
+            }
+        }
     }
 
     private static void addData(Configuration conf) throws IOException {
@@ -58,14 +69,18 @@ public class Main {
                             Bytes.toBytes("live"), Bytes.toBytes("suspend")),
                     new Put("3".getBytes()).addColumn(statuses,
                             Bytes.toBytes("award"), Bytes.toBytes("2023"))
-                    ));
+            ));
             demoTable.mutateRow(
                     RowMutations.of(List.of(
                             new Delete("2".getBytes())
                     ))
             );
-            demoTable.delete(new Delete("1".getBytes()).addColumn(statuses, "award".getBytes()));
+            deleteCell(demoTable, statuses);
         }
+    }
+
+    private static void deleteCell(Table demoTable, byte[] statuses) throws IOException {
+        demoTable.delete(new Delete("1".getBytes()).addColumn(statuses, "award".getBytes()));
     }
 
     private static Configuration getConfiguration() {
