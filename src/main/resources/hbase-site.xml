@@ -3,7 +3,7 @@
 <configuration>
     <property>
         <name>hbase.zookeeper.quorum</name>
-        <value>hbase</value>
+        <value>zookeeper</value>
     </property>
     <property>
         <name>hbase.zookeeper.property.clientPort</name>
@@ -11,6 +11,6 @@
     </property>
     <property>
         <name>hbase.zookeeper.session.timeout</name>
-        <value>12000</value>
+        <value>120000</value>
     </property>
 </configuration>
