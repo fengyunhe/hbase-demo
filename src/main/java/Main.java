@@ -3,6 +3,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.util.Bytes;
+import org.apache.hadoop.util.ToolRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,18 +16,22 @@ public class Main {
     private static final String TABLE_NAME = "user2";
     private static final String CF_DEFAULT = "info";
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         Configuration conf = getConfiguration();
         createSchemaTables(conf);
         modifyColumns(conf);
         addData(conf);
         listData(conf);
+
+        int exitCode = ToolRunner.run(conf, new User2BasicMapReduce(), args);
+        System.exit(exitCode);
     }
 
     private static void listData(Configuration conf) throws IOException {
         try (Connection connection = ConnectionFactory.createConnection(conf)) {
+            Scan scan = new Scan().addFamily("info".getBytes()).addFamily("status".getBytes());
             ResultScanner scanner = connection.getTable(TableName.valueOf("user2"))
-                    .getScanner(new Scan().addFamily("info".getBytes()).addFamily("status".getBytes()));
+                    .getScanner(scan);
             for (Result result : scanner) {
                 log.info(result.toString());
             }
