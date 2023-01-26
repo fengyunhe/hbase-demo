@@ -1,13 +1,9 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Main" type="Application" factoryName="Application" nameIsGenerated="true">
-    <envs>
-      <env name="HADOOP_COMMON_LIB_NATIVE_DIR" value="/opt/hbase-$HBASE_VERSION/lib/" />
-      <env name="HBASE_VERSION" value="2.5.2" />
-    </envs>
     <option name="MAIN_CLASS_NAME" value="Main" />
     <module name="hbase-demo" />
-    <target name="registry.cn-hangzhou.aliyuncs.com/yangyan/hbase-demo" />
-    <option name="VM_PARAMETERS" value="-Djava.library.path=/opt/hbase-2.5.2/lib/" />
+    <projectPathOnTarget name="projectPathOnTarget" value="/app" />
+    <target name="@@@LOCAL@@@" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>

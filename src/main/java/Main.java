@@ -13,8 +13,7 @@ import java.util.List;
 
 public class Main {
     private static final Logger log = LoggerFactory.getLogger(Main.class);
-    private static final String TABLE_NAME = "user2";
-    private static final String CF_DEFAULT = "info";
+    public static final String TB_NAME_USER = "user2";
 
     public static void main(String[] args) throws Exception {
         Configuration conf = getConfiguration();
@@ -30,7 +29,7 @@ public class Main {
     private static void listData(Configuration conf) throws IOException {
         try (Connection connection = ConnectionFactory.createConnection(conf)) {
             Scan scan = new Scan().addFamily("info".getBytes()).addFamily("status".getBytes());
-            ResultScanner scanner = connection.getTable(TableName.valueOf("user2"))
+            ResultScanner scanner = connection.getTable(TableName.valueOf(TB_NAME_USER))
                     .getScanner(scan);
             for (Result result : scanner) {
                 log.info(result.toString());
@@ -40,7 +39,7 @@ public class Main {
 
     private static void addData(Configuration conf) throws IOException {
         try (Connection connection = ConnectionFactory.createConnection(conf)) {
-            Table demoTable = connection.getTable(TableName.valueOf("user2"));
+            Table demoTable = connection.getTable(TableName.valueOf(TB_NAME_USER));
             byte[] infos = Bytes.toBytes("info");
             byte[] statuses = Bytes.toBytes("status");
             demoTable.put(List.of(
@@ -100,12 +99,16 @@ public class Main {
     public static void createSchemaTables(Configuration config) throws IOException {
         try (Connection connection = ConnectionFactory.createConnection(config);
              Admin admin = connection.getAdmin()) {
-            TableDescriptor tableDescriptor = TableDescriptorBuilder.newBuilder(TableName.valueOf(TABLE_NAME))
+            TableDescriptor tableDescriptor = TableDescriptorBuilder.newBuilder(TableName.valueOf(TB_NAME_USER))
                     .setColumnFamilies(List.of(
-                            ColumnFamilyDescriptorBuilder.of(CF_DEFAULT)
+                            ColumnFamilyDescriptorBuilder.of("info")
                     )).build();
             log.info("Creating table. ");
             createOrOverwrite(admin, tableDescriptor);
+            createOrOverwrite(admin, TableDescriptorBuilder.newBuilder(TableName.valueOf("basic"))
+                    .setColumnFamilies(List.of(
+                            ColumnFamilyDescriptorBuilder.of("info")
+                    )).build());
             log.info("Creating table Done.");
         }
     }
@@ -113,7 +116,7 @@ public class Main {
     public static void modifyColumns(Configuration config) throws IOException {
         try (Connection connection = ConnectionFactory.createConnection(config);
              Admin admin = connection.getAdmin()) {
-            TableName user2 = TableName.valueOf("user2");
+            TableName user2 = TableName.valueOf(TB_NAME_USER);
             log.info("Modify table. ");
 //            admin.disableTable(user2);
             admin.modifyColumnFamily(user2,
